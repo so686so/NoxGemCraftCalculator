@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoneCraft - 어빌리티 스톤 세공 시뮬레이터 & 계산기</title>
+  <meta name="description" content="로스트아크 어빌리티 스톤 세공 시뮬레이터 및 실시간 확률 계산기. 최적의 세공 경로 추천 및 확률 계산 제공.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="background-decor">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <i class="fa-solid fa-gem stone-icon"></i>
+        <h1>StoneCraft</h1>
+        <span class="badge">PRO</span>
+      </div>
+      <p class="subtitle">어빌리티 스톤 세공 시뮬레이터 & 최적화 계산기</p>
+      
+      <div class="header-controls">
+        <button id="sound-toggle-btn" class="icon-btn" title="음소거 토글">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+        <button id="help-btn" class="icon-btn" title="사용 방법 도움말">
+          <i class="fa-solid fa-circle-question"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-content">
+      <!-- Left Column: Controls & Settings -->
+      <section class="settings-panel card">
+        <h2 class="panel-title"><i class="fa-solid fa-sliders"></i> 설정 및 최적화 모드</h2>
+        
+        <!-- Mode Tabs -->
+        <div class="tabs">
+          <button id="mode-tab-priority" class="tab-btn active" data-mode="priority">
+            <i class="fa-solid fa-arrow-down-up-wide"></i> 우선순위 모드
+          </button>
+          <button id="mode-tab-target" class="tab-btn" data-mode="target">
+            <i class="fa-solid fa-crosshair"></i> 목표달성 모드
+          </button>
+        </div>
+
+        <!-- Mode Content: Priority Mode -->
+        <div id="priority-settings" class="tab-content">
+          <p class="mode-desc">긍정적인 옵션 중 더 가치가 높은(세공 성공 개수가 많아야 하는) 옵션을 선택하세요.</p>
+          <div class="priority-selector">
+            <label class="radio-card">
+              <input type="radio" name="priority-opt" value="opt1" checked>
+              <div class="radio-content">
+                <span class="opt-label opt-1-label">증가 능력치 1</span>
+                <span class="badge-priority">우선순위 높음</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="priority-opt" value="opt2">
+              <div class="radio-content">
+                <span class="opt-label opt-2-label">증가 능력치 2</span>
+                <span class="badge-priority">우선순위 높음</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Mode Content: Target Mode -->
+        <div id="target-settings" class="tab-content hidden">
+          <p class="mode-desc">목표로 하는 세공 결과를 설정하면, 해당 목표를 달성할 확률을 극대화하는 세공 추천을 제공합니다.</p>
+          
+          <div class="target-inputs">
+            <div class="target-input-group">
+              <label for="target-opt1">능력치 1</label>
+              <input type="number" id="target-opt1" min="0" max="10" value="7">
+            </div>
+            <div class="target-input-group">
+              <label for="target-opt2">능력치 2</label>
+              <input type="number" id="target-opt2" min="0" max="10" value="7">
+            </div>
+            <div class="target-input-group">
+              <label for="target-opt3">감소 능력치 (이하)</label>
+              <input type="number" id="target-opt3" min="0" max="10" value="4">
+            </div>
+          </div>
+
+          <div class="presets-container">
+            <span class="preset-label">추천 프리셋:</span>
+            <div class="presets">
+              <button class="preset-btn" data-t1="7" data-t2="7" data-t3="4">7 / 7 / 4</button>
+              <button class="preset-btn" data-t1="9" data-t2="7" data-t3="4">9 / 7 / 4</button>
+              <button class="preset-btn" data-t1="6" data-t2="6" data-t3="4">6 / 6 / 4</button>
+              <button class="preset-btn" data-t1="10" data-t2="6" data-t3="4">10 / 6 / 4</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Simulation vs In-game Mode -->
+        <div class="app-mode-selector">
+          <h3><i class="fa-solid fa-gamepad"></i> 실행 모드</h3>
+          <div class="toggle-group">
+            <button id="run-mode-calc" class="toggle-btn active">
+              <i class="fa-solid fa-calculator"></i> 인게임 반영 계산기
+            </button>
+            <button id="run-mode-sim" class="toggle-btn">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> 연습용 시뮬레이터
+            </button>
+          </div>
+          <p id="run-mode-desc" class="run-mode-desc">인게임 세공 결과를 직접 입력(성공/실패 클릭)하며 최적의 추천을 받습니다.</p>
+        </div>
+      </section>
+
+      <!-- Center Column: The Stone Carving Board -->
+      <section class="stone-panel card">
+        <!-- Display Current Probability -->
+        <div class="prob-header">
+          <div class="prob-meter-container">
+            <svg class="prob-meter-svg" viewBox="0 0 100 100">
+              <circle class="prob-meter-bg" cx="50" cy="50" r="45"></circle>
+              <circle id="prob-meter-fill" class="prob-meter-fill" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <div class="prob-text-container">
+              <span class="prob-title">성공 확률</span>
+              <span id="current-prob-text" class="prob-value">65%</span>
+            </div>
+          </div>
+
+          <div class="success-rate-status">
+            <div class="status-item">
+              <span class="status-label">목표 달성 확률</span>
+              <span id="target-success-rate" class="status-value">-</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">남은 세공 횟수</span>
+              <span id="remaining-count" class="status-value">30 / 30</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ability Stone Grid -->
+        <div class="stone-grid">
+          <!-- Row 1: Positive 1 -->
+          <div id="row-opt1" class="stone-row opt-1-row recommended">
+            <div class="row-header">
+              <span class="opt-indicator color-opt1"></span>
+              <div class="row-info">
+                <span class="row-title">증가 능력치 1</span>
+                <span id="success-count-opt1" class="success-count">0 성공</span>
+              </div>
+              <div class="recommend-badge"><i class="fa-solid fa-star"></i> 추천</div>
+            </div>
+            
+            <div class="slots-container" id="slots-opt1">
+              <!-- 10 Slots will be dynamically rendered here -->
+            </div>
+            
+            <div class="action-buttons">
+              <button class="action-btn success-btn" data-row="0" data-result="success" title="세공 성공 반영">
+                <i class="fa-solid fa-circle-check"></i> 성공
+              </button>
+              <button class="action-btn fail-btn" data-row="0" data-result="fail" title="세공 실패 반영">
+                <i class="fa-solid fa-circle-xmark"></i> 실패
+              </button>
+              <button class="action-btn sim-carve-btn hidden" data-row="0" title="이 옵션 세공하기">
+                <i class="fa-solid fa-hammer"></i> 세공
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 2: Positive 2 -->
+          <div id="row-opt2" class="stone-row opt-2-row">
+            <div class="row-header">
+              <span class="opt-indicator color-opt2"></span>
+              <div class="row-info">
+                <span class="row-title">증가 능력치 2</span>
+                <span id="success-count-opt2" class="success-count">0 성공</span>
+              </div>
+              <div class="recommend-badge"><i class="fa-solid fa-star"></i> 추천</div>
+            </div>
+            
+            <div class="slots-container" id="slots-opt2">
+              <!-- 10 Slots will be dynamically rendered here -->
+            </div>
+            
+            <div class="action-buttons">
+              <button class="action-btn success-btn" data-row="1" data-result="success" title="세공 성공 반영">
+                <i class="fa-solid fa-circle-check"></i> 성공
+              </button>
+              <button class="action-btn fail-btn" data-row="1" data-result="fail" title="세공 실패 반영">
+                <i class="fa-solid fa-circle-xmark"></i> 실패
+              </button>
+              <button class="action-btn sim-carve-btn hidden" data-row="1" title="이 옵션 세공하기">
+                <i class="fa-solid fa-hammer"></i> 세공
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 3: Negative -->
+          <div id="row-opt3" class="stone-row opt-3-row">
+            <div class="row-header">
+              <span class="opt-indicator color-opt3"></span>
+              <div class="row-info">
+                <span class="row-title">감소 능력치 (부정)</span>
+                <span id="success-count-opt3" class="success-count">0 성공</span>
+              </div>
+              <div class="recommend-badge"><i class="fa-solid fa-star"></i> 추천</div>
+            </div>
+            
+            <div class="slots-container" id="slots-opt3">
+              <!-- 10 Slots will be dynamically rendered here -->
+            </div>
+            
+            <div class="action-buttons">
+              <button class="action-btn success-btn" data-row="2" data-result="success" title="세공 성공 반영">
+                <i class="fa-solid fa-circle-check"></i> 성공
+              </button>
+              <button class="action-btn fail-btn" data-row="2" data-result="fail" title="세공 실패 반영">
+                <i class="fa-solid fa-circle-xmark"></i> 실패
+              </button>
+              <button class="action-btn sim-carve-btn hidden" data-row="2" title="이 옵션 세공하기">
+                <i class="fa-solid fa-hammer"></i> 세공
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Global Action Controls (Undo, Reset, Auto) -->
+        <div class="global-actions">
+          <button id="undo-btn" class="global-btn btn-secondary" title="마지막 세공 취소 (Ctrl + Z)">
+            <i class="fa-solid fa-rotate-left"></i> 실행 취소
+          </button>
+          <button id="reset-btn" class="global-btn btn-danger" title="세공 상태 초기화">
+            <i class="fa-solid fa-trash-can"></i> 초기화
+          </button>
+          <button id="auto-btn" class="global-btn btn-primary" title="남은 슬롯을 최적 알고리즘으로 자동 세공">
+            <i class="fa-solid fa-play"></i> 자동 세공
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal hidden">
+      <div class="modal-content card">
+        <div class="modal-header">
+          <h2><i class="fa-solid fa-circle-question"></i> 사용 방법 및 세공 규칙</h2>
+          <button id="close-modal-btn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <h3>세공 성공률 규칙</h3>
+          <ul>
+            <li>기본 성공 확률은 <strong>65%</strong>입니다.</li>
+            <li>직전 세공이 <strong>성공</strong>하면 성공 확률이 <strong>-10%</strong> 감소합니다.</li>
+            <li>직전 세공이 <strong>실패</strong>하면 성공 확률이 <strong>+10%</strong> 증가합니다.</li>
+            <li>성공 확률의 상한은 <strong>75%</strong>, 하한은 <strong>25%</strong>입니다.</li>
+          </ul>
+          
+          <h3>실행 모드 가이드</h3>
+          <ul>
+            <li><strong>인게임 반영 계산기:</strong> 실제 게임을 하면서 나온 세공 결과를 [성공] 또는 [실패] 버튼을 클릭해 직접 입력합니다.</li>
+            <li><strong>연습용 시뮬레이터:</strong> 웹페이지 내에서 시뮬레이션으로 세공을 연습합니다. [세공] 버튼을 누르면 현재 확률에 따라 성공/실패가 무작위로 결정됩니다.</li>
+          </ul>
+
+          <h3>최적화 알고리즘 가이드</h3>
+          <ul>
+            <li><strong>우선순위 모드:</strong> 긍정적인 두 옵션 중 하나를 우선하여 기대 성공 개수를 최대화하도록 유도합니다.</li>
+            <li><strong>목표달성 모드:</strong> 사용자가 설정한 목표값(예: 7/7/4)을 달성할 수학적 확률이 가장 높은 추천 경로를 실시간으로 탐색해 표시합니다.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 StoneCraft. Developed for Lost Ark players. All math calculations are done in-browser using Dynamic Programming.</p>
+    </footer>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="app.js"></script>
+</body>
+</html>
