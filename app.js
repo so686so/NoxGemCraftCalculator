@@ -1,8 +1,8 @@
 // app.js
 
 // --- Constants & Global Variables ---
-const PROBS = [25, 35, 45, 55, 65, 75];
-const P_INDEX = { 25: 0, 35: 1, 45: 2, 55: 3, 65: 4, 75: 5 };
+const PROBS = [30, 40, 50, 60, 70, 80];
+const P_INDEX = { 30: 0, 40: 1, 50: 2, 60: 3, 70: 4, 80: 5 };
 
 // Flat DP arrays to avoid memory allocations and GC pauses
 // Dimension size: 11^6 * 6 = 10,629,366
@@ -150,7 +150,7 @@ const state = {
   // Cumulative successes per row (useful for fast indexing)
   successCount: [0, 0, 0],
   // Global probability
-  currentProb: 65,
+  currentProb: 70,
   // Mode: 'priority' or 'target'
   mode: 'priority',
   // Priority option: 'opt1' or 'opt2'
@@ -206,8 +206,8 @@ function solvePriorityDP() {
 
           // Opt 1
           if (r1 > 0) {
-            const nextP_succ = P_INDEX[Math.max(25, PROBS[pIdx] - 10)];
-            const nextP_fail = P_INDEX[Math.min(75, PROBS[pIdx] + 10)];
+            const nextP_succ = P_INDEX[Math.max(30, PROBS[pIdx] - 10)];
+            const nextP_fail = P_INDEX[Math.min(80, PROBS[pIdx] + 10)];
             const val = pVal * (w1 + dp[r1 - 1][r2][r3][nextP_succ]) +
                         (1 - pVal) * dp[r1 - 1][r2][r3][nextP_fail];
             if (val > bestVal) {
@@ -218,8 +218,8 @@ function solvePriorityDP() {
 
           // Opt 2
           if (r2 > 0) {
-            const nextP_succ = P_INDEX[Math.max(25, PROBS[pIdx] - 10)];
-            const nextP_fail = P_INDEX[Math.min(75, PROBS[pIdx] + 10)];
+            const nextP_succ = P_INDEX[Math.max(30, PROBS[pIdx] - 10)];
+            const nextP_fail = P_INDEX[Math.min(80, PROBS[pIdx] + 10)];
             const val = pVal * (w2 + dp[r1][r2 - 1][r3][nextP_succ]) +
                         (1 - pVal) * dp[r1][r2 - 1][r3][nextP_fail];
             if (val > bestVal) {
@@ -230,8 +230,8 @@ function solvePriorityDP() {
 
           // Opt 3
           if (r3 > 0) {
-            const nextP_succ = P_INDEX[Math.max(25, PROBS[pIdx] - 10)];
-            const nextP_fail = P_INDEX[Math.min(75, PROBS[pIdx] + 10)];
+            const nextP_succ = P_INDEX[Math.max(30, PROBS[pIdx] - 10)];
+            const nextP_fail = P_INDEX[Math.min(80, PROBS[pIdx] + 10)];
             const val = pVal * (-w3 + dp[r1][r2][r3 - 1][nextP_succ]) +
                         (1 - pVal) * dp[r1][r2][r3 - 1][nextP_fail];
             if (val > bestVal) {
@@ -293,8 +293,8 @@ function solveTargetDP() {
                 let bestProb = -1.0;
                 let bestAct = -1;
 
-                const pIdx_succ = P_INDEX[Math.max(25, PROBS[pIdx] - 10)];
-                const pIdx_fail = P_INDEX[Math.min(75, PROBS[pIdx] + 10)];
+                const pIdx_succ = P_INDEX[Math.max(30, PROBS[pIdx] - 10)];
+                const pIdx_fail = P_INDEX[Math.min(80, PROBS[pIdx] + 10)];
 
                 // Option 1
                 if (r1 > 0) {
@@ -387,9 +387,9 @@ function carve(rowIdx, isSuccess) {
 
   // Update global probability
   if (isSuccess) {
-    state.currentProb = Math.max(25, state.currentProb - 10);
+    state.currentProb = Math.max(30, state.currentProb - 10);
   } else {
-    state.currentProb = Math.min(75, state.currentProb + 10);
+    state.currentProb = Math.min(80, state.currentProb + 10);
   }
 
   // Push to history for undo
@@ -453,7 +453,7 @@ function reset() {
   ];
   state.progress = [0, 0, 0];
   state.successCount = [0, 0, 0];
-  state.currentProb = 65;
+  state.currentProb = 70;
   state.history = [];
   stopAutoPlay();
   updateUI();
@@ -557,10 +557,10 @@ function updateUI() {
   probMeterFill.style.strokeDashoffset = dashOffset;
   
   // Set dial color based on probability
-  if (state.currentProb >= 65) {
+  if (state.currentProb >= 70) {
     probMeterFill.style.stroke = '#00f2fe';
     probMeterFill.style.filter = 'drop-shadow(0 0 6px rgba(0, 242, 254, 0.6))';
-  } else if (state.currentProb >= 45) {
+  } else if (state.currentProb >= 50) {
     probMeterFill.style.stroke = '#8b5cf6';
     probMeterFill.style.filter = 'drop-shadow(0 0 6px rgba(139, 92, 246, 0.6))';
   } else {
